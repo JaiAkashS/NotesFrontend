@@ -4,9 +4,8 @@ const baseUrl = '/api/notes'
 
 let token = null
 
-const setToken = token => {
-  // eslint-disable-next-line no-unused-vars
-  token = `Bearer ${token}`
+const setToken = newToken => {
+  token = `Bearer ${newToken}`
 }
 
 const getAll = () => {

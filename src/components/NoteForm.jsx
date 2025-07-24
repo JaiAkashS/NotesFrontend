@@ -9,7 +9,7 @@ const noteForm = ({createNote}) => {
                 content: newNote,
                 important: true
             })
-        handleNewNote('')
+        setNewNote('')
     }
     return(
         <div>

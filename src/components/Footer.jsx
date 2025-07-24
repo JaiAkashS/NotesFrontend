@@ -8,7 +8,7 @@ const Footer = () => {
     return (
       <div style={footerStyle}>
         <br />
-        <em>Done by JaiAkashS@2025</em>
+        <em>Done by JaiAkashS@2025 retardation</em>
       </div>
     )
   }

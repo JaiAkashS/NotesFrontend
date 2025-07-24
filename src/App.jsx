@@ -1,5 +1,5 @@
 import Note from './components/Note'
-import { useState,useEffect } from 'react'
+import { useState,useEffect,useRef } from 'react'
 import noteService from './services/notesService.js'
 import loginService from './services/loginService.js'
 import Notification from './components/Notification'
@@ -9,14 +9,17 @@ import Footer from './components/Footer'
 import notesService from './services/notesService.js'
 import Togglable from './components/Togglable.jsx'
 
+
+
 const App = () => {
   const [notes,setNotes] = useState([])
   const [newNote,setNewNote] = useState("")
-  const [loginVisible,setLoginVisible] = useState(false)
   const [showAll,setshowAll] = useState(true)
   const [user,setUser] = useState(null)
   const [errorMessage,setErrorMessage] = useState(null)
-  
+
+  const noteFormRef = useRef()
+
   useEffect(() => {
     noteService
       .getAll()
@@ -50,6 +53,7 @@ const App = () => {
   }
 
   const addNote = (noteObject) => {
+    noteFormRef.current.toggleVisibility()
     noteService
       .create(noteObject)
       .then(returnedNote => {  
@@ -64,7 +68,7 @@ const App = () => {
 
 
   const noteForm = ()=>{
-    <Togglable buttonLabel='New Note'>
+    <Togglable buttonLabel='New Note' ref={noteFormRef}>
       <NoteForm 
         createNote={addNote}
       />
@@ -93,19 +97,21 @@ const App = () => {
             
 
   return (
-    <div>
+      <div>
       <h1>Notes</h1>
-      <Notification message={errorMessage}/>
+      <Notification message={errorMessage} />
 
-      
-      {user === null ?
-        loginForm() :
-        <div>
-          <p>{user.name} logged-in</p>
-          <div><button onClick={handleLogout}>Logout</button></div>
-          {noteForm()}
-        </div>
-      }
+      {!user && loginForm()}
+      {user && <div>
+       <p>{user.name} logged in</p>
+       <button onClick={handleLogout}>Log out</button>
+       <Togglable buttonLabel='new note' ref={noteFormRef}>
+        <NoteForm
+          createNote={addNote}
+        />
+      </Togglable>
+      </div>
+     } 
       <div>
         <button onClick={()=>{setshowAll(!showAll)}} >
             show {showAll? 'important' : 'all'}
