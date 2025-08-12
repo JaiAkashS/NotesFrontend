@@ -13,7 +13,7 @@ import Togglable from './components/Togglable.jsx'
 
 const App = () => {
   const [notes,setNotes] = useState([])
-  const [newNote,setNewNote] = useState("")
+  const [newNote,setNewNote] = useState('')
   const [showAll,setshowAll] = useState(true)
   const [user,setUser] = useState(null)
   const [errorMessage,setErrorMessage] = useState(null)
@@ -23,11 +23,11 @@ const App = () => {
   useEffect(() => {
     noteService
       .getAll()
-      .then(initialNotes => {        
+      .then(initialNotes => {
         setNotes(initialNotes)      })
   }, [])
 
-  useEffect(()=>{
+  useEffect(() => {
     const loggedUser = window.localStorage.getItem('loggedNoteAppUser')
     if (loggedUser){
       let user = JSON.parse(loggedUser)
@@ -40,12 +40,12 @@ const App = () => {
   const toggleImportanceOf = id => {
     const note = notes.find(n => n.id === id)
     const changedNote = { ...note, important: !note.important }
-  
+
     noteService
       .update(id, changedNote).then(returnedNote => {
         setNotes(notes.map(note => note.id === id ? returnedNote : note))
       })
-  
+
       .catch(error => {
         console.log(error)
         setNotes(notes.filter(n => n.id !== id))
@@ -56,7 +56,7 @@ const App = () => {
     noteFormRef.current.toggleVisibility()
     noteService
       .create(noteObject)
-      .then(returnedNote => {  
+      .then(returnedNote => {
         setNotes(notes.concat(returnedNote))
         setNewNote('')
       })
@@ -67,62 +67,62 @@ const App = () => {
   const notesToShow = showAll? notes : notes.filter(note => note.important === true)
 
 
-  const noteForm = ()=>{
+  const noteForm = () => {
     <Togglable buttonLabel='New Note' ref={noteFormRef}>
-      <NoteForm 
+      <NoteForm
         createNote={addNote}
       />
     </Togglable>
   }
 
-  const loginForm = ()=>{
+  const loginForm = () => {
     return (
-          <Togglable buttonLabel='Login'>
-            <LoginForm
-              user={user}
-              setUser={setUser}
-              errorMessage={errorMessage}
-              setErrorMessage={setErrorMessage}
-            />
-          </Togglable>
+      <Togglable buttonLabel='Login'>
+        <LoginForm
+          user={user}
+          setUser={setUser}
+          errorMessage={errorMessage}
+          setErrorMessage={setErrorMessage}
+        />
+      </Togglable>
     )
   }
 
 
-  const handleLogout = ()=>{
-            console.log('clicked')
-            window.localStorage.removeItem('loggedNoteAppUser')
-            setUser(null)
+  const handleLogout = () => {
+    console.log('clicked')
+    window.localStorage.removeItem('loggedNoteAppUser')
+    setUser(null)
   }
-            
+
 
   return (
-      <div>
+    <div>
       <h1>Notes</h1>
       <Notification message={errorMessage} />
 
       {!user && loginForm()}
       {user && <div>
-       <p>{user.name} logged in</p>
-       <button onClick={handleLogout}>Log out</button>
-       <Togglable buttonLabel='new note' ref={noteFormRef}>
-        <NoteForm
-          createNote={addNote}
-        />
-      </Togglable>
+        <p>{user.name} logged in</p>
+        <button onClick={handleLogout}>Log out</button>
+        <Togglable buttonLabel='new note' ref={noteFormRef}>
+          <NoteForm
+            createNote={addNote}
+          />
+        </Togglable>
       </div>
-     } 
+      }
       <div>
-        <button onClick={()=>{setshowAll(!showAll)}} >
+        <button onClick={() => {setshowAll(!showAll)}} >
             show {showAll? 'important' : 'all'}
         </button>
       </div>
       <ul>
-        {notesToShow.map(note => 
-            <Note key = {note.id} note={note} toggleImportance={()=>toggleImportanceOf(note.id)}></Note>
+        {notesToShow.map(note =>
+          <Note key = {note.id} note={note} toggleImportance={() => toggleImportanceOf(note.id)}></Note>
         )}
       </ul>
-    <Footer />
+      <Footer />
     </div>
   )
 }
