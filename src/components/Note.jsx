@@ -1,15 +1,25 @@
-const Note = ({ note, toggleImportance }) => {
-  const label = note.important ? 'make not important' : 'make important'
+import { useNavigate } from 'react-router-dom'
+
+const Note = ({ note }) => {
+  const navigate = useNavigate()
+
+  const handleTitleClick = () => {
+    navigate(`/notes/${note.id}`)
+  }
+
   return(
     <>
       <li className="note">
-        {note.content}
-        <button onClick = {toggleImportance}>{label}</button>
+        <h3 
+          onClick={handleTitleClick}
+          style={{ cursor: 'pointer', color: '#3498db', margin: 0 }}
+        >
+          {note.title}
+        </h3>
       </li>
 
     </>
   )
-
 }
 
 
