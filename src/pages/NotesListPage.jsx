@@ -1,5 +1,6 @@
 import Note from '../components/Note'
 import { useState, useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import noteService from '../services/notesService.js'
 import Notification from '../components/Notification'
 import LoginForm from '../components/LoginForm'
@@ -8,6 +9,7 @@ import Togglable from '../components/Togglable.jsx'
 import Footer from '../components/Footer'
 
 const NotesListPage = ({ notes, setNotes, user, setUser, errorMessage, setErrorMessage }) => {
+  const navigate = useNavigate()
   const [query, setQuery] = useState('')
   const noteFormRef = useRef()
 
@@ -51,6 +53,10 @@ const NotesListPage = ({ notes, setNotes, user, setUser, errorMessage, setErrorM
     setUser(null)
   }
 
+  const handleViewSaved = () => {
+    navigate('/notes/saved')
+  }
+
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
@@ -59,6 +65,7 @@ const NotesListPage = ({ notes, setNotes, user, setUser, errorMessage, setErrorM
           {!user && loginForm()}
           {user && <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <p style={{ margin: 0 }}>{user.name}</p>
+            <button onClick={handleViewSaved}>Saved Notes</button>
             <button onClick={handleLogout}>Log out</button>
           </div>
           }

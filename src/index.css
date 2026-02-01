@@ -275,11 +275,22 @@ footer {
   color: #f44336;
 }
 
+.reaction-btn.saved {
+  background-color: #fff3e0;
+  border-color: #ff9800;
+  color: #ff9800;
+}
+
 .reaction-count {
   font-weight: 600;
   font-size: 14px;
   min-width: 20px;
   text-align: center;
+}
+
+.save-label {
+  font-weight: 600;
+  font-size: 14px;
 }
 
 /* Note Detail Page */

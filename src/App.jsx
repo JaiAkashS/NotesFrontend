@@ -4,6 +4,7 @@ import noteService from './services/notesService.js'
 import notesService from './services/notesService.js'
 import NotesListPage from './pages/NotesListPage'
 import NoteDetailPage from './pages/NoteDetailPage'
+import SavedNotes from './components/SavedNotes'
 
 const App = () => {
   const [notes, setNotes] = useState([])
@@ -43,9 +44,14 @@ const App = () => {
         } 
       />
       <Route 
+        path="/notes/saved"
+        element={<SavedNotes user={user} />}
+      />
+      <Route 
         path="/notes/:id" 
         element={<NoteDetailPage notes={notes} />} 
       />
+      
     </Routes>
   )
 }

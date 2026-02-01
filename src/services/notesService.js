@@ -45,4 +45,28 @@ const makeReaction = async (id, reaction) => {
   return response.data
 }
 
-export default { getAll, create, update, setToken, sendSearchQuery, makeReaction }
+const saveNote = async (id) => {
+  let config = {
+    headers: { Authorization: token }
+  }
+  const response = await axios.post(`${baseUrl}/${id}/save`, {}, config)
+  return response.data
+}
+
+const unsaveNote = async (id) => {
+  let config = {
+    headers: { Authorization: token }
+  }
+  const response = await axios.post(`${baseUrl}/${id}/unsave`, {}, config)
+  return response.data
+}
+
+const getSavedNotes = async () => {
+  let config = {
+    headers: { Authorization: token }
+  }
+  const response = await axios.get(`${baseUrl}/saved`, config)
+  return response.data
+}
+
+export default { getAll, create, update, setToken, sendSearchQuery, makeReaction, saveNote, unsaveNote, getSavedNotes }

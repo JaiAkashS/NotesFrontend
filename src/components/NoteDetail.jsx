@@ -4,7 +4,9 @@ import {
   FaThumbsUp,
   FaThumbsDown,
   FaRegThumbsUp,
-  FaRegThumbsDown
+  FaRegThumbsDown,
+  FaBookmark,
+  FaRegBookmark
 } from "react-icons/fa";
 import { useEffect } from 'react';
 import notesService from "../services/notesService"
@@ -13,6 +15,7 @@ import notesService from "../services/notesService"
 const NoteDetail = ({ note }) => {
   const navigate = useNavigate()
   const [reaction, setReaction] = useState(null);
+  const [isSaved, setIsSaved] = useState(false)
   const [likesCount, setLikesCount] = useState(note.likes?.length || 0);
   const [dislikesCount, setDislikesCount] = useState(note.dislikes?.length || 0);
 
@@ -56,7 +59,18 @@ const NoteDetail = ({ note }) => {
       console.error('Failed to dislike:', error)
     }
   };
-  
+
+  const handleSaveNote = async () => {
+    try {
+      const response = await notesService.saveNote(note.id)
+      if (response) {
+        setIsSaved(response.isSaved)
+      }
+    } catch (error) {
+      console.error('Failed to save note:', error)
+    }
+  };
+
   const handleBack = () => {
     navigate('/')
   }
@@ -72,38 +86,37 @@ const NoteDetail = ({ note }) => {
       <article className="note-detail-article">
         <h1 className="note-detail-title">{note.title}</h1>
         <div className="reaction-container">
-        <button
-          className={`reaction-btn ${reaction === "like" ? "liked" : ""}`}
-          onClick={handleLike}
-          aria-label="Like"
-        >
-          {reaction === "like" ? <FaThumbsUp /> : <FaRegThumbsUp />}
-          <span className="reaction-count">{likesCount}</span>
-        </button>
+          <button
+            className={`reaction-btn ${reaction === "like" ? "liked" : ""}`}
+            onClick={handleLike}
+            aria-label="Like" 
+          >
+            {reaction === "like" ? <FaThumbsUp /> : <FaRegThumbsUp />}
+            <span className="reaction-count">{likesCount}</span>
+          </button>
 
-        <button
-          className={`reaction-btn ${reaction === "dislike" ? "disliked" : ""}`}
-          onClick={handleDislike}
-          aria-label="Dislike"
-        >
-          {reaction === "dislike" ? <FaThumbsDown /> : <FaRegThumbsDown />}
-          <span className="reaction-count">{dislikesCount}</span>
-        </button>
-      </div>
-        <div className="note-detail-content">
-          <p>{note.content}</p>
+          <button
+            className={`reaction-btn ${reaction === "dislike" ? "disliked" : ""}`}
+            onClick={handleDislike}
+            aria-label="Dislike"
+          >
+            {reaction === "dislike" ? <FaThumbsDown /> : <FaRegThumbsDown />}
+            <span className="reaction-count">{dislikesCount}</span>
+          </button>
+
+          <button
+            className={`reaction-btn ${isSaved ? "saved" : ""}`}
+            onClick={handleSaveNote}
+            aria-label="Save Note"
+          >
+            {isSaved ? <FaBookmark /> : <FaRegBookmark />}
+            <span className="save-label">{isSaved ? "Saved" : "Save"}</span>
+          </button>
+          
         </div>
-
-        {note.tags && note.tags.length > 0 && (
-          <div className="note-detail-tags-section">
-            <h3 className="note-detail-tags-heading">Tags</h3>
-            <div className="tags">
-              {note.tags.map((tag, index) => (
-                <span key={index} className="tag">{tag}</span>
-              ))}
-            </div>
-          </div>
-        )}
+        <div className="note-detail-content">
+            <p>{note.content}</p>
+        </div>
       </article>
     </div>
   )
