@@ -9,48 +9,29 @@ function SavedNotes({ user }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!user) {
-      navigate('/')
-      return
-    }
-
-    fetchSavedNotes()
+    if (!user) { navigate('/'); return }
+    notesService.getSavedNotes()
+      .then(setSavedNotes)
+      .catch(e => console.error(e))
+      .finally(() => setLoading(false))
   }, [user, navigate])
 
-  const fetchSavedNotes = async () => {
-    try {
-      setLoading(true)
-      const notes = await notesService.getSavedNotes()
-      setSavedNotes(notes)
-    } catch (error) {
-      console.error('Failed to fetch saved notes:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleBack = () => {
-    navigate('/')
-  }
-
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h1 style={{ margin: 0 }}>Saved Notes</h1>
-        <button onClick={handleBack}>← Back to Notes</button>
+    <div className="px-6 pt-8 pb-24">
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="font-serif text-2xl font-bold">Saved Posts</h1>
+        <button className="back-button" onClick={() => navigate('/')}>← Back</button>
       </div>
 
       {loading ? (
-        <p>Loading saved notes...</p>
+        <p className="text-[13px] text-[#999]">Loading...</p>
       ) : savedNotes.length === 0 ? (
-        <p style={{ textAlign: 'center', color: '#999', marginTop: '40px' }}>
-          No saved notes yet. Bookmark notes to read later!
+        <p className="text-center text-[#999] text-sm mt-10">
+          No saved posts yet. Bookmark posts to read later!
         </p>
       ) : (
         <ul>
-          {savedNotes.map(note =>
-            <Note key={note.id} note={note} />
-          )}
+          {savedNotes.map(note => <Note key={note.id} note={note} />)}
         </ul>
       )}
     </div>
@@ -58,4 +39,3 @@ function SavedNotes({ user }) {
 }
 
 export default SavedNotes
- 

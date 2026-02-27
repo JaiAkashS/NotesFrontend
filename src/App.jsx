@@ -1,23 +1,18 @@
 import { useState, useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
-import noteService from './services/notesService.js'
 import notesService from './services/notesService.js'
 import NotesListPage from './pages/NotesListPage'
 import NoteDetailPage from './pages/NoteDetailPage'
 import SavedNotes from './components/SavedNotes'
+import AuthorProfilePage from './pages/AuthorProfilePage'
+import TrendingPage from './pages/TrendingPage'
+import CollectionListPage from './pages/CollectionListPage'
+import CollectionDetailPage from './pages/CollectionDetailPage'
+import DraftsPage from './pages/DraftsPage'
 
 const App = () => {
-  const [notes, setNotes] = useState([])
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
-
-  useEffect(() => {
-    noteService
-      .getAll()
-      .then(initialNotes => {
-        setNotes(initialNotes)
-      })
-  }, [])
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('loggedNoteAppUser')
@@ -34,8 +29,6 @@ const App = () => {
         path="/" 
         element={
           <NotesListPage 
-            notes={notes} 
-            setNotes={setNotes} 
             user={user} 
             setUser={setUser}
             errorMessage={errorMessage}
@@ -49,9 +42,28 @@ const App = () => {
       />
       <Route 
         path="/notes/:id" 
-        element={<NoteDetailPage notes={notes} />} 
+        element={<NoteDetailPage user={user} />} 
       />
-      
+      <Route
+        path="/profile/:username"
+        element={<AuthorProfilePage currentUser={user} />}
+      />
+      <Route
+        path="/trending"
+        element={<TrendingPage user={user} />}
+      />
+      <Route
+        path="/collections"
+        element={<CollectionListPage user={user} />}
+      />
+      <Route
+        path="/collections/:id"
+        element={<CollectionDetailPage user={user} />}
+      />
+      <Route
+        path="/drafts"
+        element={<DraftsPage user={user} />}
+      />
     </Routes>
   )
 }

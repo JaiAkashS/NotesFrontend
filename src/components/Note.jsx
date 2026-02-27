@@ -1,50 +1,71 @@
-import { useNavigate } from 'react-router-dom'
-import { useState } from 'react';
-import {
-  FaBookmark,
-  FaRegBookmark
-} from "react-icons/fa";
-const Note = ({ note }) => {
+import { useNavigate, Link } from 'react-router-dom'
+
+const Note = ({ note, handleNotInterested }) => {
   const navigate = useNavigate()
-  const [saved, setSaved] = useState(false);
-  const handleTitleClick = () => {
-    navigate(`/notes/${note.id}`)
-  }
-    const handleSaved = async ()=>{
-    const response = await notesService.saveNote(note.id)
-    try{
-      if(response){
-      setSaved(response.saved)
-      }
-    }catch(error){
-      console.error("failed to save note",error)
-    }
+  const excerpt = note.content
+    ? note.content.replace(/<[^>]+>/g, '').slice(0, 140).trim()
+    : ''
 
-  }
+  return (
+    <li className="border-b border-[#eaeaea] py-5 first:border-t">
+      <div className="flex gap-4">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+            {note.user && (
+              <Link to={`/profile/${note.user.username}`} className="text-xs text-[#999] font-medium hover:text-[#111] transition-colors">
+                {note.user.name || note.user.username}
+              </Link>
+            )}
+            {note.category && note.category !== 'General' && (
+              <span className="text-[#FF6719] text-[11px] font-semibold uppercase tracking-wider">
+                {note.category}
+              </span>
+            )}
+          </div>
 
-  return(
-    <>
-      <li className="note">
-        <h3 
-          onClick={handleTitleClick}
-          style={{ cursor: 'pointer', color: '#3498db', margin: 0 }}
-        >
-          {note.title}
-        </h3>
-        
-        {/* <button
-          className={`reaction-btn ${isSaved ? "saved" : ""}`}
-          onClick={handleSaveNote}
-          aria-label="Save Note"
-        >
-          {isSaved ? <FaBookmark /> : <FaRegBookmark />}
-          <span className="save-label">{isSaved ? "Saved" : "Save"}</span>
-        </button> */}
-      </li>
+          <h3
+            className="font-serif text-[1.1rem] font-bold text-[#111] cursor-pointer leading-snug mb-1 hover:text-[#FF6719] transition-colors"
+            onClick={() => navigate(`/notes/${note.id}`)}
+          >
+            {note.title}
+          </h3>
 
-    </>
+          {excerpt && (
+            <p className="text-[13.5px] text-neutral-500 leading-relaxed mb-2.5 line-clamp-2">
+              {excerpt}{note.content?.replace(/<[^>]+>/g, '').length > 140 ? '\u2026' : ''}
+            </p>
+          )}
+
+          <div className="flex items-center justify-between mt-3">
+            <div className="flex gap-1.5 flex-wrap">
+              {note.tags?.map(tag => (
+                <span key={tag} className="bg-[#f3f3f3] text-[#999] px-2 py-0.5 rounded text-[11px] font-medium">
+                  {tag}
+                </span>
+              ))}
+            </div>
+            {handleNotInterested && (
+              <button
+                className="bg-transparent border-0 p-0 text-[11.5px] text-[#999] cursor-pointer hover:text-red-500 transition-colors"
+                onClick={() => handleNotInterested(note.id)}
+              >
+                Not interested
+              </button>
+            )}
+          </div>
+        </div>
+
+        {note.coverImage && (
+          <img
+            src={note.coverImage}
+            alt="cover"
+            className="w-24 h-16 object-cover rounded-md flex-shrink-0 border border-[#eaeaea] cursor-pointer"
+            onClick={() => navigate(`/notes/${note.id}`)}
+          />
+        )}
+      </div>
+    </li>
   )
 }
-
 
 export default Note

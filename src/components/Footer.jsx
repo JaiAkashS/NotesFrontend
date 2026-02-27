@@ -1,16 +1,7 @@
-const Footer = () => {
-  const footerStyle = {
-    color: 'black',
-    fontStyle: 'italic',
-    fontSize: 16
-  }
-
-  return (
-    <div style={footerStyle}>
-      <br />
-      <em>Done by JaiAkashS@2026</em>
-    </div>
-  )
-}
+const Footer = () => (
+  <footer className="border-t border-[#eaeaea] mt-16 py-8 text-center text-[12px] text-[#999]">
+    <em>LiminalPress · Built by JaiAkashS · 2026</em>
+  </footer>
+)
 
 export default Footer
